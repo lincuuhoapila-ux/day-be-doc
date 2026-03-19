@@ -2,66 +2,124 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
+<title>Học chữ vui nhộn</title>
+
 <style>
   body {
     margin: 0;
     height: 100vh;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #f5f5f5;
-    font-family: Arial;
+
+    background: linear-gradient(135deg, #ffe0f0, #e0f7ff);
+    font-family: 'Comic Sans MS', Arial;
+  }
+
+  .container {
+    text-align: center;
+    position: relative;
+  }
+
+  .title {
+    font-size: 40px;
+    margin-bottom: 20px;
+    color: #ff66aa;
   }
 
   .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 60px;
-    text-align: center;
   }
 
   .letter {
-    font-size: 120px;
-    color: red;
+    font-size: 140px;
+    color: #ff3333;
     font-weight: bold;
     opacity: 0;
     transform: scale(0.5);
-    transition: all 0.3s;
+    transition: all 0.4s ease;
   }
 
   .show {
     opacity: 1;
-    transform: scale(1);
+    transform: scale(1.2);
+  }
+
+  /* icon dễ thương */
+  .decor {
+    position: absolute;
+    font-size: 40px;
+    animation: float 5s infinite ease-in-out;
+  }
+
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
   }
 </style>
+
 </head>
 <body>
 
-<div class="grid" id="grid"></div>
+<div class="container">
+  <div class="title">Bé cùng đọc nào! 🎉</div>
+
+  <div class="grid">
+    <div class="letter" id="l0"></div>
+    <div class="letter" id="l1"></div>
+    <div class="letter" id="l2"></div>
+    <div class="letter" id="l3"></div>
+    <div class="letter" id="l4"></div>
+  </div>
+
+  <!-- icon cute -->
+  <div class="decor" style="top:-40px; left:-40px;">🐻</div>
+  <div class="decor" style="top:-40px; right:-40px;">⭐</div>
+  <div class="decor" style="bottom:-40px; left:-40px;">🎈</div>
+  <div class="decor" style="bottom:-40px; right:-40px;">🌈</div>
+</div>
+
+<!-- âm thanh chữ -->
+<audio id="soundQ" src="q.mp3"></audio>
+<audio id="soundP" src="p.mp3"></audio>
+<audio id="soundA" src="a.mp3"></audio>
+<audio id="soundB" src="b.mp3"></audio>
+<audio id="soundC" src="c.mp3"></audio>
+
+<!-- nhạc nền -->
+<audio id="bgMusic" src="music.mp3" loop autoplay></audio>
 
 <script>
-const letters = ["q","p","a","b","c"];
-let currentIndex = 0;
+const letters = ["q", "p", "a", "b", "c"];
+let currentLetterIndex = 0;
 
-const total = 12; // 4 hàng x 3 cột
+const elements = [
+  document.getElementById("l0"),
+  document.getElementById("l1"),
+  document.getElementById("l2"),
+  document.getElementById("l3"),
+  document.getElementById("l4")
+];
 
-const grid = document.getElementById("grid");
-
-// tạo sẵn ô
-for (let i = 0; i < total; i++) {
-  const div = document.createElement("div");
-  div.className = "letter";
-  grid.appendChild(div);
-}
-
-const elements = document.querySelectorAll(".letter");
+// map âm thanh
+const sounds = {
+  "q": document.getElementById("soundQ"),
+  "p": document.getElementById("soundP"),
+  "a": document.getElementById("soundA"),
+  "b": document.getElementById("soundB"),
+  "c": document.getElementById("soundC")
+};
 
 let index = 0;
 
 function showNext() {
-  const currentLetter = letters[currentIndex];
+  const currentLetter = letters[currentLetterIndex];
 
-  // reset vòng
+  // reset vòng mới
   if (index === 0) {
     elements.forEach(el => {
       el.classList.remove("show");
@@ -69,20 +127,28 @@ function showNext() {
     });
   }
 
+  // hiện chữ
   elements[index].innerText = currentLetter;
   elements[index].classList.add("show");
 
+  // đọc chữ (mỗi lần 1 lần → thành q... q... q...)
+  const sound = sounds[currentLetter];
+  if (sound) {
+    sound.currentTime = 0;
+    sound.play();
+  }
+
   index++;
 
-  // xong 12 chữ → đổi chữ
+  // xong 5 chữ → chuyển chữ khác
   if (index >= elements.length) {
     index = 0;
-    currentIndex = (currentIndex + 1) % letters.length;
+    currentLetterIndex = (currentLetterIndex + 1) % letters.length;
   }
 }
 
-// tốc độ
-setInterval(showNext, 600);
+// tốc độ đọc (1.2s cho chậm, dễ đọc)
+setInterval(showNext, 1200);
 </script>
 
 </body>
